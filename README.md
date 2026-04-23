@@ -1,124 +1,86 @@
 # BroadcastChannel テストプロジェクト
 
-このプロジェクトは、ブラウザの `BroadcastChannel` を使って
-同一オリジン内の複数ページ間でリアルタイム同期を行う簡単なデモです。
+Next.js + TypeScript + Tailwind CSS + pnpm で構成した、ブラウザの `BroadcastChannel` デモです。
+同一オリジン内の複数ページ間で入力内容をリアルタイム同期します。
 
-- `/a`：入力ページ
-- `/b`：表示ページ
+- `/a`: 入力ページ
+- `/b`: 表示ページ
 
-入力内容はリアルタイムで共有され、`localStorage` によってリロード後も保持されます。
-
----
+入力内容は `localStorage` に保存されるため、リロード後も保持されます。
 
 ## 構成
 
-```
+```txt
 project/
-├── index.html    # /a（入力）
-├── preview.html  # /b（表示）
-├── src/          # TypeScript ソース
-├── dist/         # tsc のビルド出力
-├── tsconfig.json # TypeScript 設定
-├── package.json  # pnpm scripts / 依存関係
-└── server.js     # ローカルサーバー
+├── src/
+│   ├── app/
+│   │   ├── a/          # /a 入力ページ
+│   │   ├── b/          # /b 表示ページ
+│   │   ├── globals.css # Tailwind CSS
+│   │   ├── layout.tsx
+│   │   └── page.tsx    # / から /a へリダイレクト
+│   ├── channel.ts      # BroadcastChannel 共通設定
+│   └── parser.ts       # 入力テキストのパーサー
+├── next.config.ts
+├── postcss.config.mjs
+├── tsconfig.json
+├── package.json
+└── pnpm-lock.yaml
 ```
-
----
 
 ## 動作環境
 
-- Node.js（v14 以上推奨）
+- Node.js 20.9 以上
 - pnpm
 - モダンブラウザ（Chrome / Edge / Firefox）
 
----
-
 ## 実行手順
 
-### 1. プロジェクトフォルダに移動
-
-```bash
-cd project
-```
-
-### 2. 依存関係をインストール
+依存関係をインストールします。
 
 ```bash
 pnpm install
 ```
 
-### 3. TypeScript をビルドしてサーバーを起動
+開発サーバーを起動します。
 
 ```bash
 pnpm dev
 ```
 
-開発中に型チェックだけ行う場合:
-
-```bash
-pnpm typecheck
-```
-
-ビルド済みの `dist/` がある場合はサーバーだけ起動できます:
-
-```bash
-pnpm start
-```
-
-### 4. ブラウザで開く
-
-以下の2つを**別ウィンドウまたは別タブで開く**
+ブラウザで以下の2つを別ウィンドウまたは別タブで開きます。
 
 - http://localhost:3000/a
 - http://localhost:3000/b
 
----
+## コマンド
+
+```bash
+pnpm dev        # 開発サーバー
+pnpm build      # 本番ビルド
+pnpm start      # 本番サーバー
+pnpm typecheck  # 型チェック
+```
 
 ## 機能
 
-### リアルタイム同期
+- `/a` に入力すると `/b` に即時反映
+- 入力内容を `localStorage` に保存
+- `/a` のリセットボタンで入力と表示を同時にクリア
+- `/` は `/a` にリダイレクト
 
-- `/a` に入力すると `/b` に即時反映される
+## 入力形式
 
-### 状態保持
+```txt
+a: 自分の発話 [自分側メモ]
+b: [相手側メモ] 相手の発話
+meta: 場面転換
+```
 
-- リロードしても入力内容は保持される（localStorage使用）
-
-### リセット機能
-
-- `/a` の「リセット」ボタンで
-  - 入力内容削除
-  - `/b` の表示も同時にクリア
-
----
-
-## 使用技術
-
-- BroadcastChannel API（ブラウザ間通信）
-- localStorage（簡易永続化）
-- TypeScript（ブラウザ側コード）
-- Node.js（簡易HTTPサーバー）
-
----
+角括弧内の `\` は表示時に改行として扱われます。
 
 ## 制限事項
 
-- 同一オリジン（localhost:3000）でのみ動作
-- 別デバイス間では同期されない
-- データベースは使用していない（完全クライアント内状態）
-
----
-
-## 今後の拡張案
-
-- WebSocket を使ったサーバー経由のリアルタイム通信
-- SQLite / Supabase などとの連携
-- 双方向編集（/b → /a）
-- データ構造の複雑化（JSONベース）
-
----
-
-## 補足
-
-BroadcastChannel は「同一ブラウザ内の軽量な Pub/Sub」のような仕組みです。
-Supabase Realtime の概念をローカルで理解するのに適しています。
+- 同一オリジンでのみ同期されます
+- 別デバイス間では同期されません
+- データベースは使用していません
