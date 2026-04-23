@@ -13,6 +13,10 @@ const speakerMap: Record<string, ItemType> = {
   meta: 'meta',
 };
 
+function decodeLineBreaks(value: string): string {
+  return value.replace(/\\/g, '\n');
+}
+
 export function parseScript(input: string): Item[] {
   const lines = input
     .split(/\r?\n/)
@@ -37,17 +41,17 @@ export function parseScript(input: string): Item[] {
 
     const headNoteMatch = rest.match(/^\[([^[\]]*?)\]\s*/);
     if (headNoteMatch) {
-      item.otherNote = headNoteMatch[1].trim();
+      item.otherNote = decodeLineBreaks(headNoteMatch[1].trim());
       rest = rest.slice(headNoteMatch[0].length).trim();
     }
 
     const tailNoteMatch = rest.match(/\s*\[([^[\]]*?)\]$/);
     if (tailNoteMatch) {
-      item.selfNote = tailNoteMatch[1].trim();
+      item.selfNote = decodeLineBreaks(tailNoteMatch[1].trim());
       rest = rest.slice(0, rest.length - tailNoteMatch[0].length).trim();
     }
 
-    item.body = rest;
+    item.body = decodeLineBreaks(rest);
 
     items.push(item);
   }
