@@ -1,0 +1,14 @@
+{
+  "name": "broadcast-channel-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && node server.js",
+    "start": "node server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

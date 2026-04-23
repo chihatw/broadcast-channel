@@ -14,9 +14,13 @@
 
 ```
 project/
-├── index.html   # /a（入力）
-├── preview.html # /b（表示）
-└── server.js    # ローカルサーバー
+├── index.html    # /a（入力）
+├── preview.html  # /b（表示）
+├── src/          # TypeScript ソース
+├── dist/         # tsc のビルド出力
+├── tsconfig.json # TypeScript 設定
+├── package.json  # npm scripts / 依存関係
+└── server.js     # ローカルサーバー
 ```
 
 ---
@@ -36,13 +40,31 @@ project/
 cd project
 ```
 
-### 2. サーバーを起動
+### 2. 依存関係をインストール
 
 ```bash
-node server.js
+npm install
 ```
 
-### 3. ブラウザで開く
+### 3. TypeScript をビルドしてサーバーを起動
+
+```bash
+npm run dev
+```
+
+開発中に型チェックだけ行う場合:
+
+```bash
+npm run typecheck
+```
+
+ビルド済みの `dist/` がある場合はサーバーだけ起動できます:
+
+```bash
+npm start
+```
+
+### 4. ブラウザで開く
 
 以下の2つを**別ウィンドウまたは別タブで開く**
 
@@ -73,6 +95,7 @@ node server.js
 
 - BroadcastChannel API（ブラウザ間通信）
 - localStorage（簡易永続化）
+- TypeScript（ブラウザ側コード）
 - Node.js（簡易HTTPサーバー）
 
 ---
