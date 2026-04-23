@@ -19,7 +19,7 @@ project/
 ├── src/          # TypeScript ソース
 ├── dist/         # tsc のビルド出力
 ├── tsconfig.json # TypeScript 設定
-├── package.json  # npm scripts / 依存関係
+├── package.json  # pnpm scripts / 依存関係
 └── server.js     # ローカルサーバー
 ```
 
@@ -28,6 +28,7 @@ project/
 ## 動作環境
 
 - Node.js（v14 以上推奨）
+- pnpm
 - モダンブラウザ（Chrome / Edge / Firefox）
 
 ---
@@ -43,25 +44,25 @@ cd project
 ### 2. 依存関係をインストール
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3. TypeScript をビルドしてサーバーを起動
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 開発中に型チェックだけ行う場合:
 
 ```bash
-npm run typecheck
+pnpm typecheck
 ```
 
 ビルド済みの `dist/` がある場合はサーバーだけ起動できます:
 
 ```bash
-npm start
+pnpm start
 ```
 
 ### 4. ブラウザで開く
