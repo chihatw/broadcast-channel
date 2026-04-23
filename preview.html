@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>B</title>
+  </head>
+  <body>
+    <h2>B（表示）</h2>
+    <div id="output"></div>
+
+    <script>
+      const channel = new BroadcastChannel('demo');
+      const output = document.getElementById('output');
+      const STORAGE_KEY = 'shared';
+
+      // 初期表示
+      const saved = localStorage.getItem(STORAGE_KEY);
+      output.textContent = saved !== null ? saved : '';
+
+      // リアルタイム更新
+      channel.onmessage = (event) => {
+        const { type, value } = event.data;
+
+        if (type === 'update') {
+          output.textContent = value;
+        }
+
+        if (type === 'reset') {
+          output.textContent = '';
+        }
+      };
+    </script>
+  </body>
+</html>

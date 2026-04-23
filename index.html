@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>A</title>
+  </head>
+  <body>
+    <h2>A（入力）</h2>
+
+    <input id="input" placeholder="ここに入力" />
+    <button id="reset">リセット</button>
+
+    <script>
+      const channel = new BroadcastChannel('demo');
+      const input = document.getElementById('input');
+      const resetButton = document.getElementById('reset');
+      const STORAGE_KEY = 'shared';
+
+      // 初期値を localStorage から復元
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved !== null) {
+        input.value = saved;
+      }
+
+      // 入力時に保存＋他画面へ通知
+      input.addEventListener('input', () => {
+        const value = input.value;
+        localStorage.setItem(STORAGE_KEY, value);
+        channel.postMessage({
+          type: 'update',
+          value,
+        });
+      });
+
+      // リセットボタン
+      resetButton.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        input.value = '';
+        channel.postMessage({
+          type: 'reset',
+        });
+      });
+    </script>
+  </body>
+</html>
