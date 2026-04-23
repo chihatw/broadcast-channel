@@ -4,7 +4,7 @@ const channel = createChannel();
 const input = document.getElementById('input');
 const resetButton = document.getElementById('reset');
 
-if (!(input instanceof HTMLInputElement)) {
+if (!(input instanceof HTMLTextAreaElement)) {
   throw new Error('Input element was not found.');
 }
 

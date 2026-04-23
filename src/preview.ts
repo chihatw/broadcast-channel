@@ -1,23 +1,35 @@
 import { ChannelMessage, STORAGE_KEY, createChannel } from './channel.js';
+import { parseScript } from './parser.js';
 
 const channel = createChannel();
 const output = document.getElementById('output');
 
-if (!(output instanceof HTMLDivElement)) {
+if (!(output instanceof HTMLPreElement)) {
   throw new Error('Output element was not found.');
 }
 
+const outputElement = output;
+
+function renderParseResult(value: string): void {
+  try {
+    outputElement.textContent = JSON.stringify(parseScript(value), null, 2);
+  } catch (error) {
+    outputElement.textContent =
+      error instanceof Error ? error.message : 'パースに失敗しました。';
+  }
+}
+
 const saved = localStorage.getItem(STORAGE_KEY);
-output.textContent = saved !== null ? saved : '';
+renderParseResult(saved !== null ? saved : '');
 
 channel.onmessage = (event: MessageEvent<ChannelMessage>) => {
   const { type } = event.data;
 
   if (type === 'update') {
-    output.textContent = event.data.value;
+    renderParseResult(event.data.value);
   }
 
   if (type === 'reset') {
-    output.textContent = '';
+    renderParseResult('');
   }
 };
