@@ -3,10 +3,98 @@
   <head>
     <meta charset="UTF-8" />
     <title>B</title>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: #333;
+        background: #f4f4f4;
+      }
+
+      #output {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 100vh;
+        padding: 16px;
+        background: #a9bdea;
+      }
+
+      .script-row {
+        display: grid;
+        grid-template-columns: minmax(120px, 170px) minmax(260px, 1fr) minmax(
+            120px,
+            170px
+          );
+        gap: 16px;
+        align-items: start;
+      }
+
+      .note {
+        min-height: 1.2em;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff7b8;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      .note:empty {
+        visibility: hidden;
+      }
+
+      .main {
+        display: flex;
+      }
+
+      .bubble {
+        max-width: 72%;
+        padding: 12px 18px;
+        border-radius: 14px;
+        background: #fff;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      .script-row.self .main {
+        justify-content: flex-end;
+      }
+
+      .script-row.self .bubble {
+        background: #a9f58b;
+      }
+
+      .script-row.other .main {
+        justify-content: flex-start;
+      }
+
+      .script-row.meta .main {
+        justify-content: center;
+      }
+
+      .script-row.meta .bubble {
+        max-width: 64%;
+        padding-block: 6px;
+        border-radius: 999px;
+        background: #f2f2f2;
+        text-align: center;
+      }
+
+      .error {
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: #ffe1e1;
+        color: #8a1f1f;
+      }
+    </style>
   </head>
   <body>
-    <h2>B（表示）</h2>
-    <pre id="output"></pre>
+    <div id="output"></div>
 
     <script type="module" src="/dist/preview.js"></script>
   </body>
