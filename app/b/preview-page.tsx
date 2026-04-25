@@ -47,17 +47,17 @@ function ScriptRow({ item }: { item: Item }) {
     <div
       className={`grid grid-cols-[minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(7rem,10rem)_minmax(16rem,1fr)_minmax(7rem,10rem)] sm:gap-4 ${item.type}`}
     >
-      <div className='min-h-5 whitespace-pre-wrap break-words rounded-md bg-[#fff7b8] px-3.5 py-3 empty:invisible'>
+      <div className='min-h-5 whitespace-pre-wrap wrap-break-word rounded-md bg-[#fff7b8] px-3.5 py-3 empty:invisible'>
         {item.otherNote}
       </div>
       <div className={`flex ${justify}`}>
         <div
-          className={`max-w-[72%] whitespace-pre-wrap break-words rounded-md px-[18px] py-3 ${bubble}`}
+          className={`max-w-[72%] whitespace-pre-wrap wrap-break-word rounded-md px-4.5 py-3 ${bubble}`}
         >
           {item.body}
         </div>
       </div>
-      <div className='min-h-5 whitespace-pre-wrap break-words rounded-md bg-[#fff7b8] px-3.5 py-3 empty:invisible'>
+      <div className='min-h-5 whitespace-pre-wrap wrap-break-word rounded-md bg-[#fff7b8] px-3.5 py-3 empty:invisible'>
         {item.selfNote}
       </div>
     </div>
