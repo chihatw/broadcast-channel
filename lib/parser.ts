@@ -58,3 +58,35 @@ export function parseScript(input: string): Item[] {
 
   return items;
 }
+
+export function stripScriptNotes(input: string): string {
+  const lines = input
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  return lines
+    .map((line) => {
+      const m = line.match(/^(meta|a|b)(\s*[:：]\s*)(.*)$/);
+      if (!m) {
+        throw new Error(`行の形式が不正です: ${line}`);
+      }
+
+      const speaker = m[1];
+      const separator = m[2];
+      let rest = m[3].trim();
+
+      const headNoteMatch = rest.match(/^\[([^[\]]*?)\]\s*/);
+      if (headNoteMatch) {
+        rest = rest.slice(headNoteMatch[0].length).trim();
+      }
+
+      const tailNoteMatch = rest.match(/\s*\[([^[\]]*?)\]$/);
+      if (tailNoteMatch) {
+        rest = rest.slice(0, rest.length - tailNoteMatch[0].length).trim();
+      }
+
+      return `${speaker}${separator}${rest}`;
+    })
+    .join('\n');
+}

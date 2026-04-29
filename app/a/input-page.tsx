@@ -1,10 +1,14 @@
 'use client';
 
 import { type ChannelMessage, STORAGE_KEY, createChannel } from '@/lib/channel';
+import { stripScriptNotes } from '@/lib/parser';
 import { useEffect, useRef, useState } from 'react';
 
 export function InputPage() {
   const [value, setValue] = useState('');
+  const [copyStatus, setCopyStatus] = useState<
+    'idle' | 'success' | 'error'
+  >('idle');
   const channelRef = useRef<BroadcastChannel | null>(null);
 
   useEffect(() => {
@@ -25,6 +29,7 @@ export function InputPage() {
     };
 
     setValue(nextValue);
+    setCopyStatus('idle');
     localStorage.setItem(STORAGE_KEY, nextValue);
     channelRef.current?.postMessage(message);
   }
@@ -37,6 +42,16 @@ export function InputPage() {
     setValue('');
     localStorage.removeItem(STORAGE_KEY);
     channelRef.current?.postMessage(message);
+  }
+
+  async function copyOriginalText() {
+    try {
+      await navigator.clipboard.writeText(stripScriptNotes(value));
+      setCopyStatus('success');
+    } catch (error) {
+      console.error(error);
+      setCopyStatus('error');
+    }
   }
 
   return (
@@ -68,15 +83,28 @@ export function InputPage() {
           />
           <div className='flex items-center justify-between gap-3'>
             <p className='text-sm text-slate-500'>
-              入力内容は同一オリジン内の /b に同期されます。
+              {copyStatus === 'success'
+                ? 'オリジナルをクリップボードにコピーしました。'
+                : copyStatus === 'error'
+                  ? 'コピーに失敗しました。入力形式を確認してください。'
+                  : '入力内容は同一オリジン内の /b に同期されます。'}
             </p>
-            <button
-              className='rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700'
-              type='button'
-              onClick={resetValue}
-            >
-              リセット
-            </button>
+            <div className='flex shrink-0 items-center gap-2'>
+              <button
+                className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100'
+                type='button'
+                onClick={copyOriginalText}
+              >
+                オリジナル
+              </button>
+              <button
+                className='rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700'
+                type='button'
+                onClick={resetValue}
+              >
+                リセット
+              </button>
+            </div>
           </div>
         </section>
       </div>
