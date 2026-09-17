@@ -1,6 +1,13 @@
 'use client';
 
-import { type ChannelMessage, STORAGE_KEY, createChannel } from '@/lib/channel';
+import {
+  DEFAULT_FONT_SCALE,
+  FONT_SCALE_STORAGE_KEY,
+  type ChannelMessage,
+  STORAGE_KEY,
+  clampFontScale,
+  createChannel,
+} from '@/lib/channel';
 import { type Item, parseScript } from '@/lib/parser';
 import { useEffect, useRef, useState } from 'react';
 import { ScriptRow } from './script-row';
@@ -36,12 +43,17 @@ export function PreviewPage() {
     status: 'success',
     items: [],
   });
+  const [fontScale, setFontScale] = useState(DEFAULT_FONT_SCALE);
   const channelRef = useRef<BroadcastChannel | null>(null);
+  const hideNotes = fontScale >= 2;
 
   useEffect(() => {
     const channel = createChannel();
     channelRef.current = channel;
     setResult(parseValue(localStorage.getItem(STORAGE_KEY) ?? ''));
+    setFontScale(
+      clampFontScale(Number(localStorage.getItem(FONT_SCALE_STORAGE_KEY))),
+    );
 
     channel.onmessage = (event: MessageEvent<ChannelMessage>) => {
       if (event.data.type === 'update') {
@@ -50,6 +62,10 @@ export function PreviewPage() {
 
       if (event.data.type === 'reset') {
         setResult(parseValue(''));
+      }
+
+      if (event.data.type === 'font-scale') {
+        setFontScale(clampFontScale(event.data.value));
       }
     };
 
@@ -62,6 +78,7 @@ export function PreviewPage() {
   return (
     <main
       className={`flex min-h-screen flex-col gap-2 ${uiColors.screen.background} p-4 ${uiColors.text.base}`}
+      style={{ fontSize: `calc(1rem * ${fontScale})` }}
     >
       {result.status === 'error' ? (
         <div
@@ -71,7 +88,11 @@ export function PreviewPage() {
         </div>
       ) : (
         result.items.map((item, index) => (
-          <ScriptRow key={`${item.type}-${index}-${item.body}`} item={item} />
+          <ScriptRow
+            key={`${item.type}-${index}-${item.body}`}
+            item={item}
+            hideNotes={hideNotes}
+          />
         ))
       )}
     </main>
