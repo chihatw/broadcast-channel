@@ -87,7 +87,7 @@ export function PreviewPage() {
 
   return (
     <main
-      className={`flex min-h-screen flex-col gap-[0.5em] ${uiColors.screen.background} p-4 ${uiColors.text.base}`}
+      className={`flex min-h-screen flex-col gap-[0.5em] ${uiColors.screen.background} px-4 pt-4 pb-[100dvh] ${uiColors.text.base}`}
       style={{ fontSize: `calc(1rem * ${fontScale})` }}
     >
       {result.status === 'error' ? (
