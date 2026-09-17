@@ -9,7 +9,7 @@ import {
   createChannel,
 } from '@/lib/channel';
 import { type Item, parseScript } from '@/lib/parser';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ScriptRow } from './script-row';
 import { uiColors } from './ui-colors';
 
@@ -45,7 +45,15 @@ export function PreviewPage() {
   });
   const [fontScale, setFontScale] = useState(DEFAULT_FONT_SCALE);
   const channelRef = useRef<BroadcastChannel | null>(null);
+  const scrollPositionRef = useRef<number | null>(null);
   const hideNotes = fontScale >= 2;
+
+  useLayoutEffect(() => {
+    if (scrollPositionRef.current === null) return;
+
+    window.scrollTo(0, scrollPositionRef.current);
+    scrollPositionRef.current = null;
+  }, [result]);
 
   useEffect(() => {
     const channel = createChannel();
@@ -57,10 +65,12 @@ export function PreviewPage() {
 
     channel.onmessage = (event: MessageEvent<ChannelMessage>) => {
       if (event.data.type === 'update') {
+        scrollPositionRef.current = window.scrollY;
         setResult(parseValue(event.data.value));
       }
 
       if (event.data.type === 'reset') {
+        scrollPositionRef.current = window.scrollY;
         setResult(parseValue(''));
       }
 
